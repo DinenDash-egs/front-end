@@ -1,1 +1,4 @@
-# front-end
+# React + Vite + Tailwind
+```
+npm run dev
+```

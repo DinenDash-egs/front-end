@@ -10,15 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/postcss": "^4.0.15",
     "@tailwindcss/vite": "^4.0.15",
-    "daisyui": "^5.0.9",
+    "axios": "^1.8.4",
+    "daisyui": "^4.12.10",
     "react": "^19.0.0",
+    "react-daisyui": "^5.0.5",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@tailwindcss/postcss": "^4.0.15",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",

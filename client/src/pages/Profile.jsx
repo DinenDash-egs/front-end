@@ -45,15 +45,31 @@ const Profile = () => {
   };
 
   return (
-    <div className="p-6 w-screen mx-auto bg-primary-content min-h-screen flex flex-col justify-between">
-      <div className='text-primary'>
-        <h1 className="text-2xl font-bold mb-4 text-center">User Profile</h1>
+    <div
+      data-theme="forest"
+      className="flex items-center justify-center min-h-screen bg-base-200 p-4 w-screen"
+    >
+      <div className="w-full max-w-md bg-base-100 shadow-xl rounded-2xl px-6 py-8 space-y-6">
+        <h1 className="text-3xl font-bold text-center text-primary">User Profile</h1>
 
+        {/* Default profile picture */}
+        <div className="flex justify-center">
+          <div className="avatar">
+            <div className="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+              <img
+                src="https://api.dicebear.com/7.x/bottts/svg?seed=default"
+                alt="User Avatar"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Error / Loading / User Info */}
         {error && <p className="text-red-500 text-center">{error}</p>}
-        {!error && !user && <p className="text-center text-white">Loading...</p>}
+        {!error && !user && <p className="text-center text-gray-400">Loading...</p>}
 
         {user && (
-          <div className="space-y-2 text-lg text-black">
+          <div className="space-y-2 text-base text-center">
             <p><strong>Username:</strong> {user.username}</p>
             <p><strong>Email:</strong> {user.email}</p>
             <p><strong>User Type:</strong> {user.user_type === 0 ? 'User' : 'Courier'}</p>
@@ -61,21 +77,21 @@ const Profile = () => {
             <p><strong>Created At:</strong> {new Date(user.created_at).toLocaleString()}</p>
           </div>
         )}
+
+        {/* Logout button */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setShowModal(true)}
+            className="btn btn-primary text-white rounded-full"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      {/* Logout button */}
-      <div className="flex justify-center mt-8">
-        <button
-          onClick={() => setShowModal(true)}
-          className="btn btn-primary text-white"
-        >
-          Logout
-        </button>
-      </div>
-
-      {/* Modal */}
+      {/* Logout Confirmation Modal */}
       {showModal && (
-        <div className="modal modal-open fixed inset-0 z-[99999] bg-black/50 flex items-center justify-center">
+        <div className="modal modal-open fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center">
           <div className="modal-box">
             <h3 className="font-bold text-lg">Confirm Logout</h3>
             <p className="py-4">Are you sure you want to log out?</p>

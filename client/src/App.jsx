@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Register from './pages/Register';
 import RouteInfo from './pages/RouteInfo';
+import Profile from './pages/Profile';
+import MenuButton from './components/MenuButton';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -12,6 +14,7 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <Router>
+      <MenuButton />
       <div className="min-h-screen bg-gray-100">
         <Routes>
           <Route path="/" element={<Login />} />
@@ -21,6 +24,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <RouteInfo />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />

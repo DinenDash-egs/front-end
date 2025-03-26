@@ -138,7 +138,7 @@ const Register = () => {
               </label>
             </div>
 
-            <button className="btn btn-success rounded-full text-white text-md tracking-wide font-semibold mt-2">
+            <button className="btn btn-primary rounded-full text-white text-md tracking-wide font-semibold mt-2">
               Register
             </button>
           </form>
@@ -156,7 +156,7 @@ const Register = () => {
               required
             />
             <button
-              className="btn btn-success rounded-full text-white text-md tracking-wide font-semibold"
+              className="btn btn-primary rounded-full text-white text-md tracking-wide font-semibold"
               onClick={handleVerify}
             >
               Verify Email

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
@@ -13,6 +13,12 @@ const Register = () => {
 
   const [code, setCode] = useState('');
   const [step, setStep] = useState('register');
+
+  // Redirect if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) navigate('/route');
+  }, [navigate]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -67,6 +73,7 @@ const Register = () => {
 
         {step === 'register' ? (
           <form onSubmit={handleRegister} className="flex flex-col gap-5">
+            {/* Username */}
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text text-sm">Username</span>
@@ -90,6 +97,7 @@ const Register = () => {
               </label>
             </div>
 
+            {/* Email */}
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text text-sm">Email</span>
@@ -108,6 +116,7 @@ const Register = () => {
               </label>
             </div>
 
+            {/* Password */}
             <div className="form-control w-full">
               <label className="label">
                 <span className="label-text text-sm">Password</span>
@@ -147,7 +156,7 @@ const Register = () => {
               required
             />
             <button
-              className="btn btn-primary rounded-full text-white text-md tracking-wide font-semibold"
+              className="btn btn-success rounded-full text-white text-md tracking-wide font-semibold"
               onClick={handleVerify}
             >
               Verify Email

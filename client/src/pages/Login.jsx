@@ -85,6 +85,17 @@ const Login = () => {
             Login
           </button>
         </form>
+
+        {/* Register Button */}
+        <div className="text-center pt-2">
+          <p className="text-sm">Don't have an account?</p>
+          <button
+            onClick={() => navigate('/register')}
+            className="btn btn-outline btn-sm mt-2 rounded-full"
+          >
+            Register
+          </button>
+        </div>
       </div>
     </div>
   );

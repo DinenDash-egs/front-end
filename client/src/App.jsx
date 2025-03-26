@@ -1,22 +1,32 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import RouteInfo from './pages/RouteInfo';
 import Profile from './pages/Profile';
 import MenuButton from './components/MenuButton';
+import StatusChecker from './pages/StatusChecker';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/" />;
 };
 
-function App() {
+// Wrapper component to use hooks like useLocation outside of Router
+const AppWrapper = () => {
+  const location = useLocation();
+  const token = localStorage.getItem('token');
+
+  const isProtectedPath = ["/route", "/profile"].includes(location.pathname);
+
   return (
-    <Router>
-      <MenuButton />
+    <>
+      {/* Show MenuButton only if authenticated and on protected paths */}
+      {token && isProtectedPath && <MenuButton />}
+
       <div className="min-h-screen bg-gray-100">
         <Routes>
+          <Route path="/status" element={<StatusChecker />} />
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
@@ -37,6 +47,14 @@ function App() {
           />
         </Routes>
       </div>
+    </>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AppWrapper />
     </Router>
   );
 }

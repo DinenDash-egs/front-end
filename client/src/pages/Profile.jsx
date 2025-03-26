@@ -97,8 +97,8 @@ const Profile = () => {
             <p className="py-4">Are you sure you want to log out?</p>
             <div className="modal-action">
               <div className="flex gap-3">
-                <button className="btn" onClick={() => setShowModal(false)}>Cancel</button>
-                <button className="btn btn-primary text-white" onClick={handleLogout}>Logout</button>
+                <button className="btn rounded-full btn-warning" onClick={() => setShowModal(false)}>Cancel</button>
+                <button className="btn btn-primary rounded-full text-white" onClick={handleLogout}>Logout</button>
               </div>
             </div>
           </div>

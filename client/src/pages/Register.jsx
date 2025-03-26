@@ -11,6 +11,8 @@ const Register = () => {
     user_type: 0,
   });
 
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [code, setCode] = useState('');
   const [step, setStep] = useState('register');
 
@@ -26,6 +28,13 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setPasswordError('');
+
+    if (form.password !== confirmPassword) {
+      setPasswordError("Passwords don't match!");
+      return;
+    }
+
     try {
       const res = await fetch('http://127.0.0.1:8001/v1/auth/register', {
         method: 'POST',
@@ -72,12 +81,10 @@ const Register = () => {
         <h1 className="text-3xl font-bold text-center">Register</h1>
 
         {step === 'register' ? (
-          <form onSubmit={handleRegister} className="flex flex-col gap-5">
+          <form onSubmit={handleRegister} className="flex flex-col gap-0">
             {/* Username */}
             <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text text-sm">Username</span>
-              </label>
+              <label className="label"><span className="label-text text-sm">Username</span></label>
               <input
                 type="text"
                 name="username"
@@ -91,17 +98,13 @@ const Register = () => {
                 maxLength={30}
               />
               <label className="label">
-                <span className="label-text-alt text-xs">
-                  3-30 chars, letters/numbers/dash
-                </span>
+                <span className="label-text-alt text-xs">3-30 chars, letters/numbers/dash</span>
               </label>
             </div>
 
             {/* Email */}
             <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text text-sm">Email</span>
-              </label>
+              <label className="label"><span className="label-text text-sm">Email</span></label>
               <input
                 type="email"
                 name="email"
@@ -118,9 +121,7 @@ const Register = () => {
 
             {/* Password */}
             <div className="form-control w-full">
-              <label className="label">
-                <span className="label-text text-sm">Password</span>
-              </label>
+              <label className="label"><span className="label-text text-sm">Password</span></label>
               <input
                 type="password"
                 name="password"
@@ -132,15 +133,50 @@ const Register = () => {
                 minLength={8}
               />
               <label className="label">
-                <span className="label-text-alt text-xs">
-                  1 number, 1 lowercase, 1 uppercase
-                </span>
+                <span className="label-text-alt text-xs">1 number, 1 lowercase, 1 uppercase</span>
               </label>
             </div>
 
-            <button className="btn btn-primary rounded-full text-white text-md tracking-wide font-semibold mt-2">
+            {/* Confirm Password */}
+            <div className="form-control w-full">
+              <label className="label"><span className="label-text text-sm">Confirm Password</span></label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••"
+                className="input input-bordered w-full input-md rounded-full"
+                required
+              />
+              <label className="label">
+                <span className="label-text-alt text-xs">Repeat your password</span>
+              </label>
+            </div>
+
+            {/* Password Mismatch Alert */}
+            {passwordError && (
+              <div className="alert alert-error mt-2 py-2 px-3 text-sm rounded-lg">
+                <span>{passwordError}</span>
+              </div>
+            )}
+
+            {/* Submit */}
+            <button className="btn btn-primary rounded-full text-white text-md tracking-wide font-semibold mt-3">
               Register
             </button>
+
+            {/* Go to Login */}
+            <div className="text-center pt-2">
+              <p className="text-sm">Already have an account?</p>
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                className="btn btn-outline btn-sm mt-2 rounded-full"
+              >
+                Back to Login
+              </button>
+            </div>
           </form>
         ) : (
           <div className="flex flex-col gap-5">

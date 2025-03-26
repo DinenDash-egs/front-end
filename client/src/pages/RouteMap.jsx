@@ -16,51 +16,38 @@ const RouteMap = ({ start, end, route, setRoute }) => {
   const [routePath, setRoutePath] = useState([]);
 
   const snapToRoads = async (path) => {
-    const apiKey = "AIzaSyAQIhVhAaeTSYU3C294HRbbvPJT-9c_nIE"; // Substitua pela sua chave
+    const apiKey = "AIzaSyAQIhVhAaeTSYU3C294HRbbvPJT-9c_nIE";
     const pathString = path.map(coord => `${coord.lat},${coord.lng}`).join('|');
-    
+
     try {
       const response = await fetch(
         `https://roads.googleapis.com/v1/snapToRoads?path=${pathString}&interpolate=true&key=${apiKey}`
       );
-      
-      if (!response.ok) {
-        throw new Error(`Erro na requisição: ${response.statusText}`);
-      }
-      
+
       const data = await response.json();
-      
-      if (!data.snappedPoints) {
-        throw new Error("Dados inesperados: 'snappedPoints' não encontrado.");
-      }
-      
-      return data.snappedPoints.map(point => ({
+
+      return data.snappedPoints?.map(point => ({
         lat: point.location.latitude,
         lng: point.location.longitude,
-      }));
+      })) || [];
     } catch (error) {
-      console.error("Erro ao fazer snap to roads:", error);
-      throw error;
+      console.error("Snap to roads error:", error);
+      return path;
     }
   };
-
 
   useEffect(() => {
     const fetchRoute = async () => {
       const response = await fetch(`http://localhost:8000/v1/route?start_lat=${start.latitude}&start_lon=${start.longitude}&goal_lat=${end.latitude}&goal_lon=${end.longitude}`);
       const data = await response.json();
-      setRoute(data); // Salva a rota completa no estado
+      setRoute(data);
 
       const coordinates = data.route_path.map(coord => ({ lat: coord.latitude, lng: coord.longitude }));
-
-      // Ajustar os pontos com Snap to Roads
       const snappedCoordinates = await snapToRoads(coordinates);
       setRoutePath(snappedCoordinates);
     };
 
-    if (start && end) {
-      fetchRoute();
-    }
+    if (start && end) fetchRoute();
   }, [start, end, setRoute]);
 
   useEffect(() => {
@@ -76,29 +63,19 @@ const RouteMap = ({ start, end, route, setRoute }) => {
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={10}
-        onLoad={map => (mapRef.current = map)}
+        zoom={13}
+        onLoad={(map) => (mapRef.current = map)}
         options={{
           disableDefaultUI: true,
           zoomControl: true,
         }}
       >
-        <Marker
-          position={{ lat: start.latitude, lng: start.longitude }}
-          icon={{
-            url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png', // Ícone padrão
-          }}
-        />
-        <Marker
-          position={{ lat: end.latitude, lng: end.longitude }}
-          icon={{
-            url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png', // Ícone padrão
-          }}
-        />
+        <Marker position={{ lat: start.latitude, lng: start.longitude }} />
+        <Marker position={{ lat: end.latitude, lng: end.longitude }} />
         {routePath.length > 0 && (
           <Polyline
             path={routePath}
-            options={{ strokeColor: '#000000', strokeWeight: 4 }}
+            options={{ strokeColor: '#22c55e', strokeWeight: 4 }}
           />
         )}
       </GoogleMap>

@@ -6,6 +6,7 @@ import RouteInfo from './pages/RouteInfo';
 import Profile from './pages/Profile';
 import MenuButton from './components/MenuButton';
 import StatusChecker from './pages/StatusChecker';
+import Stores from './pages/Stores';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -29,6 +30,7 @@ const AppWrapper = () => {
           <Route path="/status" element={<StatusChecker />} />
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/stores" element={<Stores />} />
           <Route
             path="/route"
             element={
@@ -46,6 +48,7 @@ const AppWrapper = () => {
             }
           />
         </Routes>
+        
       </div>
     </>
   );

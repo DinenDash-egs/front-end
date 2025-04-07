@@ -7,22 +7,25 @@ import Profile from './pages/Profile';
 import MenuButton from './components/MenuButton';
 import StatusChecker from './pages/StatusChecker';
 import Stores from './pages/Stores';
+import Products from './pages/Products';
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/" />;
 };
 
-// Wrapper component to use hooks like useLocation outside of Router
 const AppWrapper = () => {
   const location = useLocation();
   const token = localStorage.getItem('token');
 
-  const isProtectedPath = ["/route", "/profile"].includes(location.pathname);
+  const protectedPaths = ["/route", "/profile", "/stores", "/store/"];
+
+  const isProtectedPath = protectedPaths.some((p) =>
+    location.pathname.startsWith(p)
+  );
 
   return (
     <>
-      {/* Show MenuButton only if authenticated and on protected paths */}
       {token && isProtectedPath && <MenuButton />}
 
       <div className="min-h-screen bg-gray-100">
@@ -30,7 +33,22 @@ const AppWrapper = () => {
           <Route path="/status" element={<StatusChecker />} />
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/stores" element={<Stores />} />
+          <Route
+            path="/stores"
+            element={
+              <ProtectedRoute>
+                <Stores />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/store/:storeName"
+            element={
+              <ProtectedRoute>
+                <Products />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/route"
             element={
@@ -48,7 +66,6 @@ const AppWrapper = () => {
             }
           />
         </Routes>
-        
       </div>
     </>
   );

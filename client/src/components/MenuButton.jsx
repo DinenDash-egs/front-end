@@ -49,10 +49,10 @@ const MenuButton = () => {
             </li>
             <li>
               <a
-                onClick={handleGoTo('/route')}
-                className={isActive('/route') ? 'bg-primary text-white font-semibold rounded' : ''}
+                onClick={handleGoTo('/stores')}
+                className={isActive('/stores') ? 'bg-primary text-white font-semibold rounded' : ''}
               >
-                Go to Route
+                Restaurants
               </a>
             </li>
             <li>

@@ -36,7 +36,7 @@ const AppWrapper = () => {
   return (
     <>
       {token && isProtectedPath && <MenuButton />}
-      <div className="min-h-screen bg-gray-100">
+      <div className="h-screen overflow-hidden bg-gray-100">
         <Routes>
           <Route
             path="/"

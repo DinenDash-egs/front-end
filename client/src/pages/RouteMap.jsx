@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { GoogleMap, LoadScript, Polyline, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScriptNext, Polyline, Marker } from '@react-google-maps/api';
 
 const containerStyle = {
   width: '100%',
@@ -91,32 +91,30 @@ const RouteMap = ({ start, end, route, setRoute, setStart }) => {
   };
 
   return (
-    <LoadScript googleMapsApiKey={apiKey}>
-      {courierPos && (
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={{ lat: courierPos.latitude, lng: courierPos.longitude }}
-          zoom={16}
-          onLoad={handleMapLoad}
-          options={{
-            disableDefaultUI: true,
-            zoomControl: true,
-          }}
-        >
-          <Marker
-            position={{ lat: courierPos.latitude, lng: courierPos.longitude }}
-            icon={icon || undefined}
+    <LoadScriptNext googleMapsApiKey={apiKey}>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={{ lat: courierPos.latitude, lng: courierPos.longitude }}
+        zoom={16}
+        onLoad={handleMapLoad}
+        options={{
+          disableDefaultUI: true,
+          zoomControl: true,
+        }}
+      >
+        <Marker
+          position={{ lat: courierPos.latitude, lng: courierPos.longitude }}
+          icon={icon || undefined}
+        />
+        <Marker position={{ lat: end.latitude, lng: end.longitude }} />
+        {routePath.length > 0 && (
+          <Polyline
+            path={routePath}
+            options={{ strokeColor: '#22c55e', strokeWeight: 6 }}
           />
-          <Marker position={{ lat: end.latitude, lng: end.longitude }} />
-          {routePath.length > 0 && (
-            <Polyline
-              path={routePath}
-              options={{ strokeColor: '#22c55e', strokeWeight: 4 }}
-            />
-          )}
-        </GoogleMap>
-      )}
-    </LoadScript>
+        )}
+      </GoogleMap>
+    </LoadScriptNext>
   );
 };
 

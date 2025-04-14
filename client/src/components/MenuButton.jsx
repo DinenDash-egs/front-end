@@ -1,11 +1,13 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
+import useActiveDeliveryLock from '../hooks/useActiveDeliveryLock';
 
 const MenuButton = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
+  const { locked } = useActiveDeliveryLock(); // Has active order
 
   const isActive = (path) => location.pathname === path;
 
@@ -20,9 +22,7 @@ const MenuButton = () => {
     navigate('/');
   };
 
-  const handleCancel = () => {
-    setShowModal(false);
-  };
+  const handleCancel = () => setShowModal(false);
 
   return (
     <>
@@ -37,7 +37,7 @@ const MenuButton = () => {
           </div>
           <ul
             tabIndex={0}
-            className="dropdown-content menu bg-base-100 rounded-box shadow w-40 mt-2 p-2"
+            className="dropdown-content menu bg-base-100 rounded-box shadow w-44 mt-2 p-2"
           >
             <li>
               <a
@@ -47,14 +47,29 @@ const MenuButton = () => {
                 Profile
               </a>
             </li>
-            <li>
-              <a
-                onClick={handleGoTo('/stores')}
-                className={isActive('/stores') ? 'bg-primary text-white font-semibold rounded' : ''}
-              >
-                Restaurants
-              </a>
-            </li>
+
+            {!locked && (
+              <li>
+                <a
+                  onClick={handleGoTo('/stores')}
+                  className={isActive('/stores') ? 'bg-primary text-white font-semibold rounded' : ''}
+                >
+                  Restaurants
+                </a>
+              </li>
+            )}
+
+            {locked && (
+              <li>
+                <a
+                  onClick={handleGoTo('/route')}
+                  className={isActive('/route') ? 'bg-primary text-white font-semibold rounded' : ''}
+                >
+                  Active Order
+                </a>
+              </li>
+            )}
+
             <li>
               <a onClick={() => setShowModal(true)}>Logout</a>
             </li>

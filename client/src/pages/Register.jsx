@@ -19,7 +19,7 @@ const Register = () => {
   // Redirect if already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) navigate('/route');
+    if (token) navigate('/stores');
   }, [navigate]);
 
   const handleChange = (e) => {

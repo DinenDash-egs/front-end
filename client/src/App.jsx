@@ -1,3 +1,4 @@
+// App.jsx
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Login from './pages/Login';
@@ -18,8 +19,7 @@ const AppWrapper = () => {
   const location = useLocation();
   const token = localStorage.getItem('token');
 
-  const protectedPaths = ["/route", "/profile", "/stores", "/store/"];
-
+  const protectedPaths = ["/stores", "/route", "/profile", "/store/"];
   const isProtectedPath = protectedPaths.some((p) =>
     location.pathname.startsWith(p)
   );
@@ -30,8 +30,13 @@ const AppWrapper = () => {
 
       <div className="min-h-screen bg-gray-100">
         <Routes>
+          <Route
+            path="/"
+            element={
+              token ? <Navigate to="/stores" /> : <Login />
+            }
+          />
           <Route path="/status" element={<StatusChecker />} />
-          <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
             path="/stores"

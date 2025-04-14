@@ -1,6 +1,7 @@
 // App.jsx
 import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import useActiveDeliveryLock from './hooks/useActiveDeliveryLock';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import RouteInfo from './pages/RouteInfo';
@@ -18,16 +19,23 @@ const ProtectedRoute = ({ children }) => {
 const AppWrapper = () => {
   const location = useLocation();
   const token = localStorage.getItem('token');
+  const { locked, loading } = useActiveDeliveryLock();
 
   const protectedPaths = ["/stores", "/route", "/profile", "/store/"];
   const isProtectedPath = protectedPaths.some((p) =>
     location.pathname.startsWith(p)
   );
 
+  if (loading) return <div className="p-8 text-center">Checking order status...</div>;
+
+  // Force locked users to stay on /route
+  if (locked && location.pathname !== "/route") {
+    return <Navigate to="/route" />;
+  }
+
   return (
     <>
       {token && isProtectedPath && <MenuButton />}
-
       <div className="min-h-screen bg-gray-100">
         <Routes>
           <Route

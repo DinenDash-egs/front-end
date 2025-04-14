@@ -1,11 +1,13 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import ProductCard from '../components/ProductCard'; // reuse your existing one
+import ProductCard from '../components/ProductCard';
 import DeliveryMap from '../components/DeliveryMap';
 import CheckoutForm from '../components/CheckoutForm';
 
 const Products = () => {
   const { storeName } = useParams();
+  const navigate = useNavigate(); // <-- useNavigate hook
+
   const [cart, setCart] = useState({});
   const [userInfo, setUserInfo] = useState(null);
   const [showMap, setShowMap] = useState(false);
@@ -65,7 +67,7 @@ const Products = () => {
 
   const handlePay = async () => {
     const orderId = `order_${Date.now()}`;
-  
+
     const res = await fetch('http://localhost:5007/v1/deliveries', {
       method: 'POST',
       headers: {
@@ -82,16 +84,17 @@ const Products = () => {
         status: 'pending',
       }),
     });
-  
+
     if (!res.ok) return alert('Failed to create delivery.');
-  
+
     const data = await res.json();
     alert(`✅ Delivery created! Tracking ID: ${data.tracking_id}`);
     setCart({});
     setDeliveryAddress('');
     setDeliveryCoords(null);
+
+    navigate('/route'); // <-- redirect to /route after successful payment
   };
-  
 
   if (showMap) {
     return <DeliveryMap onSelectLocation={handleSelectLocation} />;

@@ -1,10 +1,10 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RouteMap from './RouteMap';
 
 const RouteInfo = () => {
-  const [start, setStart] = useState({ latitude: 40.633106, longitude: -8.658746 });
-  const [end, setEnd] = useState({ latitude: 40.627, longitude: -8.645 });
+  const [start, setStart] = useState(null);
+  const [end, setEnd] = useState(null);
   const [route, setRoute] = useState(null);
   const [dragPosition, setDragPosition] = useState(120);
   const dragRef = useRef(null);
@@ -31,16 +31,77 @@ const RouteInfo = () => {
     setDragPosition((prev) => (prev > maxDrag / 2 ? maxDrag : 120));
   };
 
+  useEffect(() => {
+    let intervalId;
+
+    const getCoordinatesFromAddress = async (address) => {
+      const apiKey = "AIzaSyAQIhVhAaeTSYU3C294HRbbvPJT-9c_nIE";
+      let formattedAddress;
+
+      if (typeof address === "string") {
+        formattedAddress = address;
+      } else if (address && typeof address === "object") {
+        const { street, city, country } = address;
+        formattedAddress = `${street || ''}, ${city || ''}, ${country || ''}`;
+      } else {
+        throw new Error("Invalid address format");
+      }
+
+      const encodedAddress = encodeURIComponent(formattedAddress.trim());
+
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${apiKey}`);
+      const data = await res.json();
+
+      if (data.status === "OK") {
+        const location = data.results[0].geometry.location;
+        return { latitude: location.lat, longitude: location.lng };
+      } else {
+        console.error("Geocoding API response:", data);
+        throw new Error("Failed to geocode address");
+      }
+    };
+
+    const fetchLocations = async () => {
+      try {
+        const username = localStorage.getItem("username");
+
+        const [deliveryRes, locationRes] = await Promise.all([
+          fetch(`http://localhost:5007/v1/user/active/${username}`),
+          fetch(`http://localhost:5007/v1/location`)
+        ]);
+
+        if (!deliveryRes.ok || !locationRes.ok) throw new Error("API call failed");
+
+        const delivery = await deliveryRes.json();
+        const location = await locationRes.json();
+
+        console.log("Active Delivery:", delivery);
+        console.log("Courier Location:", location);
+
+        const destination = await getCoordinatesFromAddress(delivery.address);
+        setStart(location);
+        setEnd(destination);
+      } catch (error) {
+        console.error("Error fetching start/end locations: ", error);
+      }
+    };
+
+    fetchLocations();
+    intervalId = setInterval(fetchLocations, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <div className="relative h-screen w-screen">
-      <RouteMap start={start} end={end} route={route} setRoute={setRoute} />
+      {start && end && (
+        <RouteMap start={start} end={end} route={route} setRoute={setRoute} />
+      )}
 
-      {/* Hello Username */}
       <div className="absolute top-4 left-4 z-10 bg-base-100 text-base-content shadow-md px-4 py-2 rounded-full text-sm font-medium">
         Hello, {username}
       </div>
 
-      {/* Expandable Drawer */}
       <div
         className="absolute left-0 w-full bg-base-100 text-base-content rounded-t-2xl shadow-lg z-10"
         style={{

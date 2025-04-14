@@ -16,6 +16,7 @@
     "@mui/material": "^7.0.0",
     "@react-google-maps/api": "^2.20.6",
     "@tailwindcss/vite": "^4.0.15",
+    "axios": "^1.8.4",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
     "react": "^19.0.0",

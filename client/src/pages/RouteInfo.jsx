@@ -64,20 +64,38 @@ const RouteInfo = () => {
     const fetchLocations = async () => {
       try {
         const username = localStorage.getItem("username");
-
+    
         const [deliveryRes, locationRes] = await Promise.all([
           fetch(`http://localhost:5007/v1/user/active/${username}`),
           fetch(`http://localhost:5007/v1/location`)
         ]);
-
-        if (!deliveryRes.ok || !locationRes.ok) throw new Error("API call failed");
-
-        const delivery = await deliveryRes.json();
-        const location = await locationRes.json();
-
+    
+        if (!deliveryRes.ok) {
+          if (deliveryRes.status === 204) {
+            console.warn("No active delivery found.");
+            return;
+          }
+          throw new Error("Failed to fetch delivery");
+        }
+    
+        if (!locationRes.ok) {
+          throw new Error("Failed to fetch location");
+        }
+    
+        const deliveryText = await deliveryRes.text();
+        const locationText = await locationRes.text();
+    
+        const delivery = deliveryText ? JSON.parse(deliveryText) : null;
+        const location = locationText ? JSON.parse(locationText) : null;
+    
+        if (!delivery || !location) {
+          console.warn("One or both responses were empty.");
+          return;
+        }
+    
         console.log("Active Delivery:", delivery);
         console.log("Courier Location:", location);
-
+    
         const destination = await getCoordinatesFromAddress(delivery.address);
         setStart(location);
         setEnd(destination);
@@ -85,9 +103,10 @@ const RouteInfo = () => {
         console.error("Error fetching start/end locations: ", error);
       }
     };
+    
 
     fetchLocations();
-    intervalId = setInterval(fetchLocations, 3000);
+    intervalId = setInterval(fetchLocations, 5000);
 
     return () => clearInterval(intervalId);
   }, []);

@@ -45,7 +45,7 @@ const AppWrapper = () => {
   return (
     <>
       {token && <MenuButton />}
-      <div className="h-screen overflow-hidden bg-gray-100">
+      <div className="h-screen overflow-auto bg-gray-100">
         <Routes>
           <Route path="/" element={token ? <Navigate to="/stores" /> : <Login />} />
           <Route path="/register" element={token ? <Navigate to="/stores" /> : <Register />} />

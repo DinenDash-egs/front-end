@@ -93,7 +93,7 @@ const Products = () => {
     setDeliveryAddress('');
     setDeliveryCoords(null);
 
-    navigate('/route'); // <-- redirect to /route after successful payment
+    navigate('/order-lounge'); // <-- redirect to /route after successful payment
   };
 
   if (showMap) {

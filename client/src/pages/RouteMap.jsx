@@ -34,41 +34,52 @@ const RouteMap = ({ start, end, route, setRoute, setStart }) => {
 
   useEffect(() => {
     const fetchRoute = async () => {
-      const response = await fetch(
-        `http://localhost:8000/v1/route?start_lat=${start.latitude}&start_lon=${start.longitude}&goal_lat=${end.latitude}&goal_lon=${end.longitude}`
-      );
-      const data = await response.json();
-      setRoute(data);
-      const coordinates = data.route_path.map(coord => ({
-        lat: coord.latitude,
-        lng: coord.longitude,
-      }));
-      const snappedCoordinates = await snapToRoads(coordinates);
-      setRoutePath(snappedCoordinates);
+      if (!start || !end) return;
+
+      try {
+        const response = await fetch(
+          `http://localhost:8000/v1/route?start_lat=${start.latitude}&start_lon=${start.longitude}&goal_lat=${end.latitude}&goal_lon=${end.longitude}`
+        );
+
+        if (!response.ok) throw new Error('Route fetch failed');
+
+        const data = await response.json();
+        setRoute(data);
+
+        const coordinates = data.route_path.map(coord => ({
+          lat: coord.latitude,
+          lng: coord.longitude,
+        }));
+
+        const snappedCoordinates = await snapToRoads(coordinates);
+        setRoutePath(snappedCoordinates);
+      } catch (error) {
+        console.error("Error fetching route:", error);
+      }
     };
 
-    if (start && end) fetchRoute();
+    fetchRoute();
   }, [start, end, setRoute]);
 
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
         const res = await fetch('http://localhost:8000/v1/location');
+        if (!res.ok) throw new Error("Location fetch failed: " + res.status);
         const data = await res.json();
         const newPos = { latitude: data.latitude, longitude: data.longitude };
         setCourierPos(newPos);
-        setStart(newPos);
-        console.log("📍 Courier location:", newPos);
-        console.log("📦 Order destination:", end);
+        if (typeof setStart === 'function') setStart(newPos);
       } catch (err) {
         console.error("Failed to update courier location:", err);
       }
     }, 5000);
     return () => clearInterval(interval);
   }, [end, setStart]);
+  
 
   useEffect(() => {
-    if (mapRef.current && courierPos) {
+    if (mapRef.current && courierPos?.latitude && courierPos?.longitude) {
       const google = window.google;
       const latLng = new google.maps.LatLng(courierPos.latitude, courierPos.longitude);
       mapRef.current.panTo(latLng);
@@ -89,6 +100,10 @@ const RouteMap = ({ start, end, route, setRoute, setStart }) => {
       });
     }
   };
+
+  if (!start || !end || !start.latitude || !end.latitude) {
+    return null;
+  }
 
   return (
     <LoadScriptNext googleMapsApiKey={apiKey}>

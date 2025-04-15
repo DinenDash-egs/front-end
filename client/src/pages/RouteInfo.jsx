@@ -8,6 +8,7 @@ const RouteInfo = () => {
   const [route, setRoute] = useState(null);
   const [dragPosition, setDragPosition] = useState(120);
   const dragRef = useRef(null);
+  const navigate = useNavigate();
 
   const username = localStorage.getItem('username') || 'User';
   const maxDrag = window.innerHeight * 0.55;
@@ -32,95 +33,61 @@ const RouteInfo = () => {
   };
 
   useEffect(() => {
-    let intervalId;
+    const apiKey = "AIzaSyAQIhVhAaeTSYU3C294HRbbvPJT-9c_nIE";
+    const username = localStorage.getItem("username");
 
     const getCoordinatesFromAddress = async (address) => {
-      const apiKey = "AIzaSyAQIhVhAaeTSYU3C294HRbbvPJT-9c_nIE";
-      let formattedAddress;
-
-      if (typeof address === "string") {
-        formattedAddress = address;
-      } else if (address && typeof address === "object") {
-        const { street, city, country } = address;
-        formattedAddress = `${street || ''}, ${city || ''}, ${country || ''}`;
-      } else {
-        throw new Error("Invalid address format");
-      }
-
-      const encodedAddress = encodeURIComponent(formattedAddress.trim());
-
-      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${apiKey}`);
+      const encoded = encodeURIComponent(address);
+      const res = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encoded}&key=${apiKey}`);
       const data = await res.json();
-
       if (data.status === "OK") {
-        const location = data.results[0].geometry.location;
-        return { latitude: location.lat, longitude: location.lng };
-      } else {
-        console.error("Geocoding API response:", data);
-        throw new Error("Failed to geocode address");
+        return {
+          latitude: data.results[0].geometry.location.lat,
+          longitude: data.results[0].geometry.location.lng
+        };
       }
+      throw new Error("Geocoding failed");
     };
 
-    const fetchLocations = async () => {
+    const fetchData = async () => {
       try {
-        const username = localStorage.getItem("username");
-    
-        const [deliveryRes, locationRes] = await Promise.all([
-          fetch(`http://localhost:5007/v1/user/active/${username}`),
-          fetch(`http://localhost:5007/v1/location`)
-        ]);
-    
-        if (!deliveryRes.ok) {
-          if (deliveryRes.status === 204) {
-            console.warn("No active delivery found.");
-            return;
-          }
-          throw new Error("Failed to fetch delivery");
-        }
-    
-        if (!locationRes.ok) {
-          throw new Error("Failed to fetch location");
-        }
-    
-        const deliveryText = await deliveryRes.text();
-        const locationText = await locationRes.text();
-    
-        const delivery = deliveryText ? JSON.parse(deliveryText) : null;
-        const location = locationText ? JSON.parse(locationText) : null;
-    
-        if (!delivery || !location) {
-          console.warn("One or both responses were empty.");
+        const deliveryRes = await fetch(`http://localhost:5007/v1/user/active/${username}`);
+        if (deliveryRes.status === 204) {
+          navigate('/order-delivered');
           return;
         }
-    
-        console.log("Active Delivery:", delivery);
-        console.log("Courier Location:", location);
-    
+
+        const delivery = await deliveryRes.json();
+        if (delivery.status === 'delivered') {
+          navigate('/order-delivered');
+          return;
+        }
+
+        const locationRes = await fetch(`http://localhost:5007/v1/location`);
+        if (!locationRes.ok) throw new Error("Location fetch failed");
+        const location = await locationRes.json();
+
         const destination = await getCoordinatesFromAddress(delivery.address);
         setStart(location);
         setEnd(destination);
-      } catch (error) {
-        console.error("Error fetching start/end locations: ", error);
+      } catch (err) {
+        console.error("Fetch failed:", err);
       }
     };
-    
 
-    fetchLocations();
-    intervalId = setInterval(fetchLocations, 5000);
-
-    return () => clearInterval(intervalId);
-  }, []);
+    fetchData();
+    const interval = setInterval(fetchData, 5000);
+    return () => clearInterval(interval);
+  }, [navigate]);
 
   return (
     <div className="relative h-screen w-screen">
       {start && end && (
-        <RouteMap start={start} end={end} route={route} setRoute={setRoute} />
+        <RouteMap start={start} end={end} route={route} setRoute={setRoute} setStart={setStart} />
       )}
-
       <div className="absolute top-4 left-4 z-10 bg-base-100 text-base-content shadow-md px-4 py-2 rounded-full text-sm font-medium">
         Hello, {username}
       </div>
-
       <div
         className="absolute left-0 w-full bg-base-100 text-base-content rounded-t-2xl shadow-lg z-10"
         style={{
@@ -137,7 +104,6 @@ const RouteInfo = () => {
         onMouseLeave={handleDragEnd}
       >
         <div className="w-12 h-1.5 bg-gray-400 rounded-full mx-auto mt-2 mb-3"></div>
-
         <div className="overflow-y-auto h-full px-4 pb-4">
           {route ? (
             <div className="space-y-3">

@@ -1,16 +1,32 @@
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+
 const OrderDelivered = () => {
-    return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-green-50 text-center px-6">
-        <h1 className="text-2xl font-bold text-green-600 mb-4">🎉 Order Delivered!</h1>
-        <p className="text-gray-700 mb-6">
-          Your order has been successfully delivered. Thanks for choosing us!
-        </p>
-        <a href="/stores" className="btn btn-primary rounded-full">
-          Back to Restaurants
-        </a>
-      </div>
-    );
-  };
-  
-  export default OrderDelivered;
-  
+  const navigate = useNavigate();
+
+  // autoredirect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate('/stores');
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [navigate]);
+
+  return (
+    <div className="h-screen w-screen bg-base-200 flex flex-col items-center justify-center text-center space-y-6 px-6">
+      <h1 className="text-2xl font-bold text-success">🎉 Order Delivered!</h1>
+      <p className="text-base-content">
+        Your delivery has been successfully completed. We hope you enjoyed your meal!
+      </p>
+      <button
+        className="btn btn-primary rounded-full px-6"
+        onClick={() => navigate('/stores')}
+      >
+        Return to Restaurants
+      </button>
+    </div>
+  );
+};
+
+export default OrderDelivered;

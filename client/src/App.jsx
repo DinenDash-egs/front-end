@@ -11,6 +11,7 @@ import StatusChecker from './pages/StatusChecker';
 import Stores from './pages/Stores';
 import Products from './pages/Products';
 import OrderLounge from './pages/OrderLounge';
+import OrderDelivered from './pages/OrderDelivered';
 
 
 const ProtectedRoute = ({ children }) => {
@@ -55,7 +56,8 @@ const AppWrapper = () => {
           <Route path="/stores" element={<ProtectedRoute><Stores /></ProtectedRoute>} />
           <Route path="/store/:storeName" element={<ProtectedRoute><Products /></ProtectedRoute>} />
           <Route path="/order-lounge" element={<ProtectedRoute><OrderLounge /></ProtectedRoute>} />
-        </Routes>
+          <Route path="/order-delivered" element={<ProtectedRoute><OrderDelivered /></ProtectedRoute>} />
+          </Routes>
       </div>
     </>
   );

@@ -8,7 +8,7 @@ const OrderLounge = () => {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`http://localhost:5007/v1/user/active/${username}`);
+        const res = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/user/active/${username}`);
         if (res.status === 200) {
           const data = await res.json();
           if (data?.status === 'in_transit') {

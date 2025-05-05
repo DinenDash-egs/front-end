@@ -51,7 +51,7 @@ const RouteInfo = () => {
 
     const fetchData = async () => {
       try {
-        const deliveryRes = await fetch(`http://localhost:5007/v1/user/active/${username}`);
+        const deliveryRes = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/user/active/${username}`);
         if (deliveryRes.status === 204) {
           navigate('/order-delivered');
           return;
@@ -63,7 +63,7 @@ const RouteInfo = () => {
           return;
         }
 
-        const locationRes = await fetch(`http://localhost:5007/v1/location`);
+        const locationRes = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/location`);
         if (!locationRes.ok) throw new Error("Location fetch failed");
         const location = await locationRes.json();
 

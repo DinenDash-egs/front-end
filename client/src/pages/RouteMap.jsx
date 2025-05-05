@@ -38,7 +38,7 @@ const RouteMap = ({ start, end, route, setRoute, setStart }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8000/v1/route?start_lat=${start.latitude}&start_lon=${start.longitude}&goal_lat=${end.latitude}&goal_lon=${end.longitude}`
+          `${import.meta.env.VITE_ROUTE_API}/v1/route?start_lat=${start.latitude}&start_lon=${start.longitude}&goal_lat=${end.latitude}&goal_lon=${end.longitude}`
         );
 
         if (!response.ok) throw new Error('Route fetch failed');
@@ -64,7 +64,7 @@ const RouteMap = ({ start, end, route, setRoute, setStart }) => {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const res = await fetch('http://localhost:8000/v1/location');
+        const res = await fetch(`${import.meta.env.VITE_ROUTE_API}/v1/location`);
         if (!res.ok) throw new Error("Location fetch failed: " + res.status);
         const data = await res.json();
         const newPos = { latitude: data.latitude, longitude: data.longitude };

@@ -21,13 +21,13 @@ const CourierDashboard = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch('http://localhost:5007/v1/deliveries', {
+      const res = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/deliveries`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await res.json();
 
-      // ✅ Ordenar por data decrescente (mais recente no topo)
+      // Sort by date DESC (newest first)
       const sorted = [...data].sort(
         (a, b) => new Date(b.delivery_date) - new Date(a.delivery_date)
       );
@@ -40,13 +40,13 @@ const CourierDashboard = () => {
         navigate(`/courier/order/${active.tracking_id}`);
       }
     } catch (err) {
-      console.error('Failed to fetch deliveries:', err);
+      console.error('❌ Failed to fetch deliveries:', err);
     }
   };
 
   const handleAccept = async (tracking_id) => {
     try {
-      const res = await fetch(`http://localhost:5007/v1/deliveries/${tracking_id}`, {
+      const res = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/deliveries/${tracking_id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -71,7 +71,11 @@ const CourierDashboard = () => {
   };
 
   useEffect(() => {
-    fetchOrders();
+    fetchOrders(); // initial load
+
+    const interval = setInterval(fetchOrders, 3000); // auto-refresh every 3s
+
+    return () => clearInterval(interval); // clean up
   }, []);
 
   return (

@@ -19,7 +19,7 @@ const Products = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch(`http://localhost:8001/v1/auth/user/${username}`, {
+      const res = await fetch(`${import.meta.env.VITE_AUTH_API}/v1/auth/user/${username}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -68,7 +68,7 @@ const Products = () => {
   const handlePay = async () => {
     const orderId = `order_${Date.now()}`;
 
-    const res = await fetch('http://localhost:5007/v1/deliveries', {
+    const res = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/deliveries`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -26,7 +26,7 @@ const Profile = () => {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch(`http://127.0.0.1:8001/v1/auth/user/${username}`, {
+      const res = await fetch(`${import.meta.env.VITE_AUTH_API}/v1/auth/user/${username}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -44,7 +44,7 @@ const Profile = () => {
 
   const fetchUserOrders = async () => {
     try {
-      const res = await fetch(`http://localhost:5007/v1/user/${username}`, {
+      const res = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/user/${username}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

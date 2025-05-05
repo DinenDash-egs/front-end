@@ -32,7 +32,7 @@ const MenuButton = () => {
 
     const fetchActiveOrder = async () => {
       try {
-        const res = await fetch(`http://localhost:5007/v1/user/active/${username}`);
+        const res = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/user/active/${username}`);
         setHasActiveOrder(res.status === 200);
       } catch (error) {
         console.error("Error checking active order:", error);

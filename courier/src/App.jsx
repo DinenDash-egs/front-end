@@ -7,7 +7,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/courier" element={<CourierDashboard />} />
+        <Route path="/" element={<CourierDashboard />} />
         <Route path="/courier/order/:id" element={<CourierOrder />} />
       </Routes>
     </Router>

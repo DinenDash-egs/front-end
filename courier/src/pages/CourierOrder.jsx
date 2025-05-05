@@ -8,7 +8,7 @@ const CourierOrder = () => {
   const navigate = useNavigate();
 
   const fetchOrder = async () => {
-    const res = await fetch(`http://localhost:5007/v1/deliveries/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/deliveries/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
@@ -16,7 +16,7 @@ const CourierOrder = () => {
   };
 
   const handleComplete = async () => {
-    const res = await fetch(`http://localhost:5007/v1/deliveries/${id}`, {
+    const res = await fetch(`${import.meta.env.VITE_TRACKING_API}/v1/deliveries/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const CourierOrder = () => {
 
     if (res.ok) {
       document.cookie = "active_delivery=; Max-Age=0;";
-      navigate('/courier');
+      navigate('/');
     } else {
       alert("❌ Failed to complete delivery.");
     }

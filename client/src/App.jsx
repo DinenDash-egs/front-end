@@ -48,7 +48,7 @@ const AppWrapper = () => {
       {token && <MenuButton />}
       <div className="h-screen overflow-auto bg-gray-100">
         <Routes>
-          <Route path="/" element={token ? <Navigate to="/stores" /> : <Login />} />
+          <Route path="/" element={token ? <Navigate to="/stores" /> : <Login />} />º
           <Route path="/register" element={token ? <Navigate to="/stores" /> : <Register />} />
           <Route path="/status" element={<StatusChecker />} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
@@ -65,7 +65,7 @@ const AppWrapper = () => {
 
 function App() {
   return (
-    <Router>
+    <Router basename="/client">
       <AppWrapper />
     </Router>
   );

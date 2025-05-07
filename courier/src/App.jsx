@@ -5,7 +5,7 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/courier">
       <Routes>
         <Route path="/" element={<CourierDashboard />} />
         <Route path="/courier/order/:id" element={<CourierOrder />} />

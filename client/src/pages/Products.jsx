@@ -19,7 +19,7 @@ const Products = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch(`${import.meta.env.VITE_AUTH_API}/v1/auth/user/${username}`, {
+      const res = await fetch(`${import.meta.env.VITE_AUTH_API}/auth/v1/user/${username}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

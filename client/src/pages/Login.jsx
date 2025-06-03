@@ -19,7 +19,7 @@ const Login = () => {
     setError('');
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_AUTH_API}/v1/auth/login`, {
+      const res = await fetch(`${import.meta.env.VITE_AUTH_API}/auth/v1/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

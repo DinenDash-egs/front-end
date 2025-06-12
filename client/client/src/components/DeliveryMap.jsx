@@ -6,7 +6,7 @@ import MyLocationIcon from '@mui/icons-material/MyLocation';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const GOOGLE_MAPS_API_KEY = "AIzaSyDDsjx2dcP0Tol0IHli51DTeq36CnFQupc";
 
 const containerStyle = {
   width: '100%',
